@@ -93,11 +93,24 @@ export class TokenView {
   readonly #material = new THREE.MeshBasicMaterial({
     map: this.#texture,
     transparent: true,
-    depthWrite: false,
+    alphaTest: 0.1,
+    depthWrite: true,
+    depthTest: true,
     fog: false,
     side: THREE.DoubleSide,
   });
   readonly #geometry = new THREE.BufferGeometry();
+  readonly #highlightGeometry = new THREE.RingGeometry(0.57, 0.66, 32);
+  readonly #highlightMaterial = new THREE.MeshBasicMaterial({
+    color: 0xffd83d,
+    transparent: true,
+    opacity: 0.96,
+    depthWrite: false,
+    depthTest: true,
+    fog: false,
+    side: THREE.DoubleSide,
+    toneMapped: false,
+  });
   readonly #positions = new Float32Array(
     CHARACTER_TOKENS.length * VERTICES_PER_TOKEN * POSITION_VALUES_PER_VERTEX,
   );
@@ -105,6 +118,7 @@ export class TokenView {
     CHARACTER_TOKENS.length * VERTICES_PER_TOKEN * UV_VALUES_PER_VERTEX,
   );
   readonly #mesh: THREE.Mesh;
+  readonly #highlightMesh: THREE.Mesh;
   readonly #cameraQuaternion = new THREE.Quaternion();
   readonly #right = new THREE.Vector3();
   readonly #up = new THREE.Vector3();
@@ -137,6 +151,19 @@ export class TokenView {
     this.#mesh.renderOrder = 2;
     this.#mesh.matrixAutoUpdate = false;
     parent.add(this.#mesh);
+
+    this.#highlightMesh = new THREE.Mesh(
+      this.#highlightGeometry,
+      this.#highlightMaterial,
+    );
+    this.#highlightMesh.name = "next-token-highlight-ring";
+    this.#highlightMesh.frustumCulled = false;
+    // Render the cue before the token atlas so the ring cannot cover another
+    // token that is visually in front of the current target.
+    this.#highlightMesh.renderOrder = 1;
+    this.#highlightMesh.matrixAutoUpdate = false;
+    this.#highlightMesh.visible = false;
+    parent.add(this.#highlightMesh);
   }
 
   setEnvironment(environment: EnvironmentProfile): void {
@@ -174,6 +201,20 @@ export class TokenView {
         tokenAtlasChanged = true;
       }
     });
+    const nextEntity = nextToken === null
+      ? undefined
+      : entities.find((entity) => entity.token === nextToken);
+    if (nextEntity) {
+      const nextPosition = arena.toDisplayPoint(nextEntity.position);
+      const pulse = 1 + Math.sin(elapsedSeconds * 5) * 0.08;
+      this.#highlightMesh.position.set(nextPosition.x, 0.78, nextPosition.z);
+      this.#highlightMesh.quaternion.copy(this.#cameraQuaternion);
+      this.#highlightMesh.scale.setScalar(pulse);
+      this.#highlightMesh.updateMatrix();
+      this.#highlightMesh.visible = true;
+    } else {
+      this.#highlightMesh.visible = false;
+    }
     this.#renderedTokens.length = entities.length;
     this.#geometry.setDrawRange(0, entities.length * INDICES_PER_TOKEN);
     const positionAttribute = this.#geometry.getAttribute("position");
@@ -184,9 +225,12 @@ export class TokenView {
 
   dispose(): void {
     this.#mesh.removeFromParent();
+    this.#highlightMesh.removeFromParent();
     this.#geometry.dispose();
     this.#material.dispose();
     this.#texture.dispose();
+    this.#highlightGeometry.dispose();
+    this.#highlightMaterial.dispose();
   }
 
   #writePositions(

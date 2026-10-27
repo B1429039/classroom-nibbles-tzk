@@ -57,3 +57,23 @@ The application must work under a repository subpath. Keep Vite `base: "./"` and
 Update `CHANGELOG.md` for meaningful work. Update the relevant spec/readme when a public interface, data schema, build command, controls or gameplay behavior changes.
 
 At the end of a task report: completed items, important files changed, commands/tests run and results, and remaining known issues. Do not continue into a later phase unless requested or the active phase document explicitly authorizes it.
+
+## 課堂改良補充規範
+
+### 專案目的
+
+維持原作品的主要功能，透過小步驟完成課堂指定改良。
+
+### 修改規則
+
+- 修改前先指出涉及的檔案及計畫。
+- 優先保留原有結構，避免無關的大規模重構。
+- 新增功能需有可操作的驗證方式。
+- 修改 UI 時保留基本的行動裝置可用性。
+- 不建立或提交 API Key、密碼、個資或 `.env` 等敏感檔案。
+- 每完成一個功能，摘要修改範圍與測試結果。
+
+### 交付規則
+
+- 更新 README，說明新增功能、啟動方法及限制。
+- 在 Commit 之前先列出修改的檔案，不自行 Push 或合併。

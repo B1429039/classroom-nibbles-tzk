@@ -3,14 +3,14 @@
 Version: 2.3 (Version 1.9.1 high-contrast mecha panel pattern)
 Team: KOSMOS TOOLKITS 探真拓知酷  
 Target: Desktop Web / GitHub Pages  
-Core stack: TypeScript + Three.js + Vite
+Core stack: TypeScript + Canvas 2D + Three.js utilities + Vite
 
 ## 1. Product goal
 
-NIBBLES is a first-person 3D pinball-table vocabulary game based on classic snake mechanics. The learning loop is:
+NIBBLES is a desktop 2D top-down vocabulary game based on classic snake mechanics. The learning loop is:
 
 1. Show a target English vocabulary item and Chinese meaning.
-2. Drive the snake-mecha around a 3D arena on the horizontal XZ plane.
+2. Drive the snake-mecha around a 2D playfield whose gameplay coordinates remain the horizontal XZ plane.
 3. Eat the target characters in order.
 4. Correct character: advance progress and shorten the snake by 1 segment (minimum 3).
 5. Wrong character: lengthen the snake by 1 segment (maximum 40), stun for 1 second, then spit the wrong character back out.
@@ -28,7 +28,7 @@ Vite must use `base: "./"`. Runtime assets/data must work from a repository subp
 
 ## 3. Spatial and movement model
 
-The world is true 3D, but gameplay movement is constrained to the XZ plane. The fixed player stands at the near/south end of the table, so player-view forward is NORTH (-Z), backward is SOUTH (+Z), left is WEST (-X), and right is EAST (+X). `W`/`↑`, `S`/`↓`, `A`/`←`, and `D`/`→` always request those four absolute player-view directions; their meaning never rotates with the machine nose. Direct 180-degree reversal remains illegal at the snake primitive. When a player-view request is opposite the current heading, the control layer turns 90 degrees clockwise, travels at least one segment spacing, then completes the requested absolute direction. Snake motion is continuous and the body follows a recorded trail, not grid jumps.
+The gameplay coordinate model remains XZ, but the active presentation is a responsive Canvas 2D top-down view. North is -Z, south is +Z, west is -X, and east is +X. `W`/`↑`, `S`/`↓`, `A`/`←`, and `D`/`→` always request those four absolute directions; their meaning never rotates with the machine nose. Direct 180-degree reversal remains illegal at the snake primitive. When a requested direction is opposite the current heading, the control layer turns 90 degrees clockwise, travels at least one segment spacing, then completes the requested direction. Snake motion is continuous and the body follows a recorded trail, not grid jumps.
 
 Two rapid 90-degree inputs must not bypass the reversal rule and curl the head into its own trail. If a second corner would reverse the heading from before the previous turn, reject it until the head has travelled at least one segment spacing. During `RECOVERY`, allow one legal stationary turn, but never a direct reversal or a second stationary turn.
 
@@ -77,17 +77,17 @@ Supported gameplay character tokens: `A-Z`, `SPACE`, `PERIOD`, `APOSTROPHE`, `HY
 - Game Level 4: Dense Atmosphere, unlimited token length, 20 words, 360 seconds, snake speed 5.25 units/sec.
 - Game Level 5: Alien Forest, unlimited token length, 25 words, 300 seconds, snake speed 6.0 units/sec.
 
-Each scene has a distinct world palette, interface accent/line/warning theme, procedural deep-space background, celestial feature, fog range, solid obstacle layout and 3D obstacle treatment. The mecha armor, canopy, engine glow, character frames, table rails and environment lighting adopt the current scene palette. The snake-mecha body uses baked faceted panel shading, alternating primary/accent armor sections, slightly varied section scale and a bright energy ring around every section so adjacent parts remain distinguishable from the full-table camera. The common presentation language is a classic space-pinball cabinet: saturated navy or scene-colored cabinet panels, silver beveled frames, red-orange rails, illuminated circular target lamps, high-contrast score displays and a painted-backglass-like deep-space backdrop. All artwork remains original and procedural; do not include third-party trademarks or proprietary cabinet artwork. Theme values and snake speed switch atomically with the Game Level. Environment obstacles use the same non-lethal stun/recovery rule as SOLID walls, block bullets, remain visible in the playfield and are excluded from every token/power-up spawn. A scene change resets the snake pose/trail to the safe center while preserving earned length and cumulative ammo, then rebuilds entities outside the new geometry.
+Each scene has a distinct world palette, interface accent/line/warning theme, procedural deep-space background, celestial feature and solid obstacle layout. The shared 2D playfield uses a deep ink-navy floor, white grid lines and red warning colors for both boundaries and environment obstacles; translucent obstacle drawing keeps letters and markers readable. Physical warning rails remain slim visual markers. The mecha, character frames, table rails and background adopt the current scene palette. All artwork remains original and procedural; do not include third-party trademarks or proprietary cabinet artwork. Theme values and snake speed switch atomically with the Game Level. Environment obstacles use the same non-lethal stun/recovery rule as SOLID walls, block bullets, remain visible in the playfield and are excluded from every token/power-up spawn. A scene change resets the snake pose/trail to the safe center while preserving earned length and cumulative ammo, then rebuilds entities outside the new geometry.
 
 If a vocabulary filter yields fewer than 5 candidates, relax recent-history filtering first, then increase max token length one token at a time until sufficient.
 
 ## 8. HUD and pinball-table view
 
-Use one fixed PerspectiveCamera at the player's end of the table, angled downward to keep the full playfield and visible snake in view. Do not render the former cockpit/snake-eye mask or center reticle. An accepted `J` escape maneuver animates one backward rotation on the snake head and leading body only; the camera and full-screen view remain fixed while the gameplay head/tail orientation changes as specified in Section 3. HUD shows game level, vocabulary level, word number, main time, target, Chinese meaning, optional part of speech, token progress, heading, speed and ammo. Character tokens and power-ups use readable circular metal-ring lamp faces instead of plain development billboards. The next required token must use pulse/outline or another non-color-only cue.
+Use one responsive Canvas 2D top-down playfield that maps the complete XZ arena into the available viewport. Do not render the former cockpit/snake-eye mask, center reticle or 3D perspective camera. An accepted `J` escape maneuver animates the snake head in the 2D view while the gameplay head/tail orientation changes as specified in Section 3. HUD shows game level, vocabulary level, word number, main time, target, Chinese meaning, optional part of speech, token progress, heading, speed and ammo. Character tokens and power-ups use readable circular metal-ring lamp faces. Environment obstacles use 80% opacity and bright warning outlines so the letters and markers beneath them remain partially legible. The next required token must use a pulsing high-contrast yellow ring in the playfield plus the outlined target-sequence cue; this cue does not change the ordered collection rule.
 
-The Three.js canvas retains the full CSS viewport and automatically uses the browser's complete detected `devicePixelRatio`, with no application resolution cap. It re-detects changes while running and resizes the internal buffer to CSS size × device pixel ratio.
+The Canvas 2D surface retains the full CSS viewport and automatically uses the browser's complete detected `devicePixelRatio`, with no application resolution cap. It re-detects changes while running and resizes the internal buffer to CSS size × device pixel ratio.
 
-Do not render a mini-map, tactical radar, tactical-map state or `M`/`Esc` map controls. Do not reserve a separate information side panel. Mission information is distributed directly over the main game view as a transparent HUD: prominent mission metrics at the top, separate current-scene and total-run word progress, the current vocabulary target near the upper center, movement status at the lower left, recent events at the lower right and contextual messages near the center. HUD child cards may use high-contrast translucent backplates for readability, but the HUD root must not cover the playfield with a panel background.
+Do not render a mini-map, tactical radar, tactical-map state or `M`/`Esc` map controls. On desktop viewports, arrange the transparent HUD into three visual regions without changing the fixed 2D playfield layout: a left rail for operation instructions, environment/table-motion status and movement telemetry; the central region for the unobstructed playfield and contextual messages; and a right rail for mission metrics, target vocabulary, progress, recent events and weapon status. Do not render a decorative central bottom table apron, label or right-side overlay rail that covers the playfield; a slim left rail may remain. The right HUD rail is a transparent layout shell, and only its child information cards may use high-contrast backplates. The HUD root must not cover the central playfield with a full-screen panel background. Smaller viewports retain the existing compact HUD behavior; this change does not add mobile-specific controls.
 
 Do not show development-phase numbers, build/release versions, vocabulary data versions, diagnostic counts or selectable run seeds in the player interface. Internal diagnostics may remain as non-visible DOM attributes for automated release verification.
 
@@ -97,7 +97,7 @@ The Version 1.x user interface uses Traditional Chinese for navigation, labels, 
 
 At the start of a word/arena ensure at least one of every token type: A–Z, SPACE, PERIOD, APOSTROPHE, HYPHEN. If a consumed correct token occurs again later in the same target, immediately respawn that token. At each new word normalize the token pool so all token types exist.
 
-All spawning goes through one SpawnManager. A spawn must be inside the arena, outside solid geometry and snake body, non-overlapping with entities, and at least 4 world units from the snake head. Try at most 100 random locations, then use precomputed valid spawn points.
+All spawning goes through one SpawnManager. A spawn must be inside the arena, outside solid geometry and snake body, non-overlapping with entities, at least 4 world units from the snake head, and leave an additional 0.9 world-unit visual clearance beyond its own radius from every arena edge. Try at most 100 random locations, then use precomputed valid spawn points.
 
 ## 10. Power-ups and weapon
 

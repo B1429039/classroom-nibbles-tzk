@@ -1,7 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-// Run native-resolution performance checks before prior WebGL contexts can
-// temporarily contend for the shared Chromium GPU process.
+// Run native-resolution performance checks on the active Canvas 2D renderer.
 
 test.use({ viewport: { width: 1920, height: 1080 } });
 
@@ -13,7 +12,7 @@ async function startReleaseRun(page: import("@playwright/test").Page): Promise<v
   await expect(page.getByTestId("transition-overlay")).toBeHidden();
 }
 
-test("1920×1080 發行場景維持繪圖呼叫與幀率預算", async ({ page }) => {
+test("1920×1080 發行場景維持 2D 繪圖與幀率預算", async ({ page }) => {
   const pageErrors: string[] = [];
   const failedResponses: string[] = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
@@ -105,7 +104,7 @@ test("發行介面保有中文可及名稱、焦點與唯一識別碼", async ({
   await startReleaseRun(page);
   await expect(page.getByTestId("phase-three-canvas")).toHaveAttribute(
     "aria-label",
-    /彈珠台字彙遊戲場.*貨艙/u,
+    /2D 俯視字彙遊戲場.*貨艙/u,
   );
   await expect(page.getByTestId("target-tokens").locator('[aria-current="step"]')).toHaveCount(1);
   await page.keyboard.press("p");

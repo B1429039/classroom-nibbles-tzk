@@ -25,6 +25,7 @@ function createFixture(seed = "table-motion-test") {
       minimumHeadDistance: GAMEPLAY_CONFIG.token.minimumHeadDistance,
       minimumEntitySpacing: GAMEPLAY_CONFIG.token.minimumEntitySpacing,
       bodyClearance: GAMEPLAY_CONFIG.token.bodyClearance,
+      boundaryClearance: GAMEPLAY_CONFIG.token.boundaryClearance,
       maximumRandomAttempts: GAMEPLAY_CONFIG.token.maximumRandomAttempts,
       fallbackGridSpacing: GAMEPLAY_CONFIG.token.fallbackGridSpacing,
     },

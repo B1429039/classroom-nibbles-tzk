@@ -160,6 +160,7 @@ export class VocabularyGameplaySession {
     }
 
     if (!COLLECTION_STATES.has(this.#stateMachine.state)) return;
+    this.#ensureNextTokenAvailable();
     const collision = this.#tokenCollisions.detect(
       this.#snakeSimulation.snake.headPosition,
       this.#tokenPool.entities,
@@ -184,8 +185,8 @@ export class VocabularyGameplaySession {
       const nextToken = this.#currentEntry.tokens[this.#progressIndex];
       if (!nextToken) {
         this.#stateMachine.transition(GameState.TYPING_TEST);
-      } else if (nextToken === entity.token) {
-        this.#tokenPool.ensureToken(nextToken, this.#snakeSimulation.snake);
+      } else {
+        this.#ensureNextTokenAvailable();
       }
       const result = Object.freeze({
         kind: TokenCollectionKind.CORRECT,
@@ -272,7 +273,15 @@ export class VocabularyGameplaySession {
     this.#latestCollection = null;
     this.#typingTimeoutNoticeActive = false;
     this.#tokenPool.normalize(this.#snakeSimulation.snake);
+    this.#ensureNextTokenAvailable();
     for (const listener of this.#wordStartedListeners) listener(this.#currentEntry);
+  }
+
+  #ensureNextTokenAvailable(): void {
+    const nextToken = this.#currentEntry.tokens[this.#progressIndex];
+    if (nextToken) {
+      this.#tokenPool.ensureToken(nextToken, this.#snakeSimulation.snake);
+    }
   }
 
   subscribeToWordStarted(listener: WordStartedListener): () => void {

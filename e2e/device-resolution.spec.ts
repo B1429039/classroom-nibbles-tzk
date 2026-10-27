@@ -5,7 +5,7 @@ test.use({
   deviceScaleFactor: 2,
 });
 
-test("WebGL 自動使用裝置的完整像素比", async ({ page }) => {
+test("Canvas 2D 自動使用裝置的完整像素比", async ({ page }) => {
   await page.goto("./");
   await page.getByTestId("vocabulary-select").waitFor();
   await page.getByTestId("start-run").click();

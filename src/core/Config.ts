@@ -80,6 +80,7 @@ export const GAMEPLAY_CONFIG = Object.freeze({
     minimumHeadDistance: 4,
     minimumEntitySpacing: 0.82,
     bodyClearance: 0.68,
+    boundaryClearance: 0.9,
     maximumRandomAttempts: 100,
     fallbackGridSpacing: 1.15,
   }),

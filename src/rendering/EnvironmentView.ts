@@ -24,6 +24,9 @@ export class EnvironmentView {
       new THREE.MeshBasicMaterial({
         color: environment.palette.obstacleColor,
         fog: false,
+        transparent: true,
+        opacity: 0.8,
+        depthWrite: false,
         toneMapped: false,
       }),
     );
@@ -31,6 +34,9 @@ export class EnvironmentView {
       new THREE.MeshBasicMaterial({
         color: environment.palette.obstacleAccentColor,
         fog: false,
+        transparent: true,
+        opacity: 0.84,
+        depthWrite: false,
         toneMapped: false,
       }),
     );
@@ -189,6 +195,7 @@ export class EnvironmentView {
   ): THREE.InstancedMesh {
     const mesh = new THREE.InstancedMesh(geometry, material, obstacles.length);
     mesh.matrixAutoUpdate = false;
+    mesh.renderOrder = 3;
     const matrix = new THREE.Matrix4();
     const quaternion = new THREE.Quaternion();
     const position = new THREE.Vector3();

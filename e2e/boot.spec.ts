@@ -69,11 +69,13 @@ test("以中文彈珠台介面選擇獨立字彙並開始深空貨艙環境", as
   await expect(page.getByTestId("phase-three-canvas")).toHaveAttribute("data-token-count", "30");
   await expect(page.getByTestId("phase-three-canvas")).toHaveAttribute("data-power-up-count", "5");
   await expect(page.getByTestId("phase-three-canvas")).toHaveAttribute("data-bullet-count", "0");
-  await expect(page.getByTestId("phase-three-canvas")).toHaveAttribute("data-camera-mode", "pinball-player");
-  await expect(page.getByTestId("phase-three-canvas")).toHaveAttribute("data-camera-count", "1");
+  await expect(page.getByTestId("phase-three-canvas")).toHaveAttribute("data-render-mode", "canvas-2d");
+  await expect(page.getByTestId("phase-three-canvas")).toHaveAttribute("data-graphics-api", "canvas-2d");
+  await expect(page.getByTestId("phase-three-canvas")).toHaveAttribute("data-camera-mode", "top-down-2d");
+  await expect(page.getByTestId("phase-three-canvas")).toHaveAttribute("data-camera-count", "0");
   await expect(page.getByTestId("phase-three-canvas")).toHaveAttribute(
     "data-mecha-body-pattern",
-    "faceted-alternating-panels",
+    "flat-segmented-mecha",
   );
   await expect(page.getByTestId("phase-three-canvas")).toHaveAttribute(
     "data-mecha-segment-separator",
@@ -117,7 +119,7 @@ test("以中文彈珠台介面選擇獨立字彙並開始深空貨艙環境", as
   expect(pageErrors).toEqual([]);
 });
 
-test("資訊直接配置於主遊戲畫面且不再建立側欄或雷達", async ({ page }) => {
+test("桌面 HUD 將操作與任務資訊分置於遊戲區兩側", async ({ page }) => {
   await page.goto("./");
   await page.getByTestId("vocabulary-select").waitFor();
   await page.getByTestId("start-run").click();
@@ -125,11 +127,25 @@ test("資訊直接配置於主遊戲畫面且不再建立側欄或雷達", async
 
   const hud = page.getByTestId("game-hud");
   await expect(hud).toBeVisible();
+  await expect(hud).toHaveAttribute("data-layout", "desktop-side-rails");
   expect(
     await hud.evaluate((element) => getComputedStyle(element).backgroundColor),
   ).toBe("rgba(0, 0, 0, 0)");
-  await expect(page.getByTestId("phase-three-panel")).toHaveCount(0);
+  await expect(page.getByTestId("hud-left")).toBeVisible();
+  await expect(page.getByTestId("hud-center")).toBeVisible();
+  await expect(page.getByTestId("hud-right")).toBeVisible();
+  await expect(page.getByTestId("hud-controls")).toContainText("WASD");
   await expect(page.getByTestId("mini-map")).toHaveCount(0);
   await expect(page.getByTestId("target-tokens")).toBeVisible();
   await expect(page.getByTestId("main-timer")).toBeVisible();
+
+  const leftBox = await page.getByTestId("hud-left").boundingBox();
+  const centerBox = await page.getByTestId("hud-center").boundingBox();
+  const rightBox = await page.getByTestId("hud-right").boundingBox();
+  expect(leftBox).not.toBeNull();
+  expect(centerBox).not.toBeNull();
+  expect(rightBox).not.toBeNull();
+  if (!leftBox || !centerBox || !rightBox) return;
+  expect(leftBox.x + leftBox.width).toBeLessThanOrEqual(centerBox.x);
+  expect(centerBox.x + centerBox.width).toBeLessThanOrEqual(rightBox.x);
 });

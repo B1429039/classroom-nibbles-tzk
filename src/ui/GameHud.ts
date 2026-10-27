@@ -142,7 +142,18 @@ export class GameHud {
   constructor(container: HTMLElement) {
     this.#element = createElement("section", "game-hud");
     this.#element.dataset.testid = "game-hud";
+    this.#element.dataset.layout = "desktop-side-rails";
     this.#element.setAttribute("aria-label", "遊戲主畫面資訊");
+    const leftRail = createElement("aside", "game-hud__rail game-hud__rail--left");
+    leftRail.dataset.testid = "hud-left";
+    leftRail.setAttribute("aria-label", "操作與移動狀態");
+    const center = createElement("div", "game-hud__center");
+    center.dataset.testid = "hud-center";
+    center.setAttribute("aria-label", "中央遊戲區訊息");
+    const rightRail = createElement("aside", "game-hud__rail game-hud__rail--right");
+    rightRail.dataset.testid = "hud-right";
+    rightRail.setAttribute("aria-label", "任務與武器資訊");
+
     const heading = createElement("header", "game-hud__heading");
     heading.append(
       createElement("p", "game-hud__eyebrow", "太空字彙彈珠台"),
@@ -211,17 +222,21 @@ export class GameHud {
       "game-hud__controls",
       "WASD / 方向鍵依玩家視角移動 · 左／右 Shift 傾桌 · 按住雙 Shift 持續震桌 · J 頭尾反轉脫困 · 空白鍵發射 · P 暫停",
     );
-    this.#element.append(
+    controls.dataset.testid = "hud-controls";
+    leftRail.append(
       heading,
-      mission,
+      controls,
       this.#environmentFeature,
       this.#tableMotion,
-      targetBlock,
       telemetry,
-      events,
-      this.#phaseMessage,
-      controls,
     );
+    center.append(this.#phaseMessage);
+    rightRail.append(
+      mission,
+      targetBlock,
+      events,
+    );
+    this.#element.append(leftRail, center, rightRail);
     container.append(this.#element);
   }
 
