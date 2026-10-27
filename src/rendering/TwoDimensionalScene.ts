@@ -15,6 +15,7 @@ import type { BulletEntity } from "../gameplay/WeaponSystem";
 import type { CharacterToken } from "../vocabulary/types";
 import { MechaBackflipAnimator } from "./MechaBackflipAnimator";
 import { detectDevicePixelRatio } from "./DeviceResolution";
+import { SpaceBackdrop } from "./SpaceBackdrop";
 
 export type AnimationFrameHandler = () => void;
 
@@ -73,6 +74,7 @@ function roundedRectangle(
  * collision, spawning, vocabulary order or input behavior.
  */
 export class TwoDimensionalScene {
+  readonly #spaceBackdrop: SpaceBackdrop;
   readonly #container: HTMLElement;
   readonly #canvas: HTMLCanvasElement;
   readonly #context: CanvasRenderingContext2D;
@@ -94,6 +96,7 @@ export class TwoDimensionalScene {
     arena: Arena,
     environment: EnvironmentProfile,
   ) {
+    this.#spaceBackdrop = new SpaceBackdrop(container, environment);
     this.#container = container;
     this.#environment = environment;
     this.#canvas = document.createElement("canvas");
@@ -124,6 +127,7 @@ export class TwoDimensionalScene {
   }
 
   setEnvironment(environment: EnvironmentProfile): void {
+    this.#spaceBackdrop.setEnvironment(environment);
     this.#environment = environment;
     this.#canvas.dataset.environmentKind = environment.kind
       .toLowerCase()
@@ -202,6 +206,7 @@ export class TwoDimensionalScene {
   }
 
   dispose(): void {
+    this.#spaceBackdrop.dispose();
     window.removeEventListener("resize", this.#resize);
     this.setAnimationLoop(null);
     this.#canvas.remove();
