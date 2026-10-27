@@ -1,16 +1,16 @@
 # NIBBLES
 
-NIBBLES is a desktop-web, first-person 3D pinball-table vocabulary game based on classic snake mechanics. The project uses vanilla TypeScript, Three.js, and Vite, with CEEC Level 1–6 vocabulary prepared during Phase 0.
+NIBBLES is a desktop-web, 2D top-down vocabulary game based on classic snake mechanics. The project uses vanilla TypeScript, Canvas 2D, Three.js utilities and Vite, with CEEC Level 1–6 vocabulary prepared during Phase 0.
 
 ## Current status
 
-Version 1.9.1 is complete. It gives the snake-mecha a clearer faceted armor pattern, alternating light/dark body sections and stronger energy-ring separators so the machine no longer reads as one fused shape. It retains Version 1.9's original classic space-pinball cabinet, five scene palettes, native-resolution rendering and all existing gameplay rules.
+Version 1.9.1 is complete. The classroom improvement now presents the playfield as a responsive 2D top-down canvas, reducing perspective and lighting differences while preserving the original game rules, five scene palettes and HUD arrangement.
 
 ## Requirements
 
 - Node.js 22.12 or newer
 - npm 10 or newer
-- A WebGL-capable desktop browser
+- A modern desktop browser with Canvas 2D support
 
 ## Setup and development
 
@@ -19,7 +19,7 @@ npm install
 npm run dev
 ```
 
-Vite prints the local development URL. Choose a vocabulary mode, then start the automatically generated Version 1.9.1 classic space-pinball run.
+Vite prints the local development URL. Choose a vocabulary mode, then start the automatically generated 2D top-down run.
 
 ## Version 1.9.1 gameplay, presentation and controls
 
@@ -29,21 +29,24 @@ Vite prints the local development URL. Choose a vocabulary mode, then start the 
 - Hold left `Shift` to raise the left edge of the table by 2 degrees and slide movable tabletop objects toward player-view right; hold right `Shift` to raise the right edge and slide them toward player-view left. Gravity stops when that Shift key is released.
 - Hold both physical Shift keys together to keep shaking the table. The snake, tokens, power-ups and active bullets receive independent seeded displacements while the full table visibly wobbles and bounces. Releasing either Shift immediately stops the shake and resumes the remaining single-side tilt; releasing both returns the table to level.
 - Table displacement respects solid walls, wrap gates and environment obstacles without introducing collision death. It remains active through the normal hunting/stun/recovery world, freezes while paused, and resets outside gameplay.
-- Press `J` for an escape backflip: the current tail becomes the new head, the preserved body path reverses, and the new nose points outward along the tail tangent. Only the snake head and leading body perform the visible rotation; the camera and entire screen remain fixed. The maneuver is available while hunting and as the one allowed recovery escape turn, but not while stunned.
+- Press `J` for an escape backflip: the current tail becomes the new head, the preserved body path reverses, and the new nose points outward along the tail tangent. The 2D renderer animates the head direction indicator while the playfield remains fixed. The maneuver is available while hunting and as the one allowed recovery escape turn, but not while stunned.
 - Rapid double-corner input cannot fold the head back into the snake: a U-shaped second turn is accepted only after moving at least one 0.75-unit segment spacing. Recovery still permits one stationary escape turn.
-- Collect the outlined/pulsing next token shown in the target sequence.
+- Collect the next token shown in the target sequence; the active token in the playfield is marked with a pulsing high-contrast yellow ring, while the target sequence also outlines the current character.
+- Environment obstacles use 80% opacity with bright warning outlines, so their warning shape remains clear while the 2D playfield stays readable. Their physical positions and collision rules are unchanged.
 - A correct token advances progress and shortens the snake by one segment, with a minimum length of 3.
 - A wrong token lengthens the snake by one segment, with a maximum length of 40, stuns for one second, then respawns.
 - All 30 gameplay token types—A–Z, SPACE, PERIOD, APOSTROPHE, and HYPHEN—exist at the start of every word.
 - One each of +10, +5, −10, −5 and ATTACK always exists. Numeric power-ups adjust the scene main timer by the displayed seconds; a negative adjustment reaching zero uses the normal level-failed flow.
 - ATTACK adds five cumulative rounds. Press `Space` while hunting to fire one round in the current heading; firing is disabled during stun, recovery and typing.
 - A bullet repositions a hit token or power-up without collecting or activating it. Solid walls and environment obstacles destroy bullets, and otherwise unspent bullets expire after four seconds.
-- Red east/west walls are `SOLID`; blue north/south gates are `WRAP`.
+- The playfield uses a deep ink-navy floor and white grid lines. Solid east/west walls and wrap north/south gates both use red warning colors; their existing opaque versus translucent rendering still distinguishes the two boundary behaviors.
+- Environment obstacles use a dark-red body with a bright-red warning accent so they stand out against the darker field.
 - Wall, environment-obstacle and self collisions retain the Phase 2 non-lethal stun/recovery behavior.
-- The single player camera looks down from the near end of the pinball table, showing the full arena and the complete visible snake. The former cockpit mask and reticle are removed.
-- Enlarged mission metrics appear at the top of the playfield with separate current-scene and total-run progress. The current vocabulary target remains near the upper center, movement telemetry at the lower left, recent events at the lower right, and contextual messages near the center. High-contrast translucent backplates preserve the full playfield without reserving a separate information panel.
-- Every Game Level has its own procedural star field, nebula palette and celestial feature. Mecha armor, canopy, engine glow, cabinet panels, target lamps, table rails and lighting switch with the same environment theme.
-- The snake-mecha uses baked faceted shading plus alternating silver and scene-accent armor sections. Slightly smaller accent sections and enlarged luminous rings create visible gaps without adding per-section draw calls.
+- The playfield is rendered by a responsive Canvas 2D top-down view: the full arena, snake, letters, power-ups, bullets, grid, red boundaries and translucent red obstacles remain visible without 3D perspective or lighting.
+- The decorative central bottom table apron, its label and the right-side overlay rail are removed so they do not cover the lower playfield; the left rail remains as visual decoration. Physical arena warning rails are intentionally slim so they mark the boundary without covering the playfield.
+- The desktop HUD reserves three visual regions around the playfield: operation instructions, environment/table-motion status and movement telemetry on the left; the unobstructed gameplay view and contextual messages in the center; and mission metrics, target vocabulary, progress, recent events and weapon status on the right. The right rail is a narrow, transparent layout shell, so only its information cards cover the playfield and the central table has more separation from the HUD. The recent-event card is intentionally compact to preserve the lower-right playfield. Smaller viewports retain the existing compact HUD behavior, and this change does not add mobile-specific controls.
+- Every Game Level has its own procedural star field, nebula palette and celestial feature. Mecha colors, cabinet panels, target lamps, table rails and lighting switch with the same environment theme.
+- The 2D snake-mecha uses alternating body colors, luminous segment rings and a clear directional head marker so its continuous trail is easy to follow.
 - The interface uses an original classic space-pinball drawing language: extruded score typography, silver ridged frames, saturated cabinet panels, red-orange playfield rails and circular metal-ring token/power-up lamps. It does not ship third-party logos, trademarks or proprietary cabinet artwork.
 - Player-facing screens omit phase numbers, release/data versions, diagnostic counts and the former run-seed field.
 - The mini-map, enlarged tactical radar, `M`/`Esc` map controls and tactical-map slow-motion state have been removed.
@@ -52,7 +55,7 @@ Vite prints the local development URL. Choose a vocabulary mode, then start the 
 - If a scene's main timer reaches zero, a Chinese mission report returns the player to mission settings. This is a time-limit failure only; collisions remain non-lethal delay penalties.
 - Use the Chinese `音效：開／關` control to persist the sound preference. Audio is synthesized with native Web Audio and gracefully falls back to silent play if audio is unavailable.
 - Scene changes use closed-shield mission cards. Completing all 75 words opens the KOSMOS TOOLKITS 探真拓知酷 credits and a return-to-mission-settings action.
-- The token pool is rendered as one camera-facing texture-atlas mesh. The WebGL canvas automatically uses the browser's full detected device pixel ratio and re-detects ratio changes while running, so its internal buffer matches the device's native CSS-size × pixel-ratio resolution.
+- The Canvas 2D surface automatically uses the browser's full detected device pixel ratio and re-detects ratio changes while running, so its internal buffer matches the device's native CSS-size × pixel-ratio resolution.
 
 Completing the final token pauses movement and the main timer in `TYPING_TEST` and opens the typing reinforcement modal:
 
@@ -70,7 +73,7 @@ Each Game Level has its own environment profile:
 - Game Level 4 — Dense Atmosphere: gold-blue ion storm, pressure pylons and short-range fog, 20 words, 5.25 units/sec.
 - Game Level 5 — Alien Forest: emerald alien aurora, dense tree trunks, 25 words, 6.0 units/sec.
 
-Scene changes preserve earned snake length and cumulative ammo, reset the snake to a safe central pose, clear active bullets and seed all tokens/power-ups outside the new solid geometry.
+Scene changes preserve earned snake length and cumulative ammo, reset the snake to a safe central pose, clear active bullets and seed all tokens/power-ups outside the new solid geometry and inside an additional 0.9-unit visual boundary clearance.
 
 ## Quality and build commands
 
@@ -112,11 +115,11 @@ Only run the importer when intentionally changing vocabulary import logic or sou
 - Phase 3 tests cover deterministic run selection, Progressive mapping, filter relaxation, spawn constraints/fallback, token-pool normalization, ordered progress, repeated tokens, wrong-token respawn, length rewards/penalties and timer pausing.
 - Phase 4 tests cover answer normalization, exact internal punctuation/spacing, consecutive-success streaks, real-time timeout, final-token rollback and the five-second timer bonus.
 - Phase 5 tests cover persistent mutually spaced power-ups, signed timer effects, cumulative ammo, firing restrictions, projectile motion, WRAP travel, solid-wall removal and non-activating shot repositioning.
-- Phase 6's original tactical-map coverage has been retired with the removed feature; the replacement pinball camera and integrated HUD are covered by current view and browser tests.
+- Phase 6's original tactical-map coverage has been retired with the removed feature; the replacement 2D playfield and integrated HUD are covered by current view and browser tests.
 - Phase 7 tests cover all five environment profiles, obstacle-safe arena capacity, level switching, safe pose reset, non-lethal obstacle collision and projectile blocking.
 - Phase 8 tests cover synthesized cue/ambient definitions, mute persistence, token/power-up/impact event routing, exact-state pause/resume, hidden-page auto-pause, door transitions and credits/replay presentation.
 - Phase 9 tests cover successful and failed state-machine exits, the Chinese failure dialog and focus, release metadata, unique IDs, accessible names, asset/network errors, draw-call and render-resolution budgets, and the 30 FPS minimum at 1920×1080.
-- Version 1.9.1 tests cover the faceted alternating mecha-body pattern, energy-ring separators and retained native-resolution performance. Version 1.9's classic space-pinball visual contract, five distinct cabinet/rail/lamp palettes and circular playfield-marker coverage remains active, as does all earlier gameplay coverage.
+- Version 1.9.1 tests cover the retained gameplay and native-resolution Canvas 2D presentation. The five distinct environment palettes, circular playfield markers and all earlier gameplay coverage remain active.
 - Playwright also checks vocabulary selection, independent Game/Vocabulary labels, the Cargo Bay environment and obstacle markers, the 30-token and five-power-up scene, integrated HUD, steering/firing rules, pause behavior, typing-modal submission and modal-scoped clipboard blocking.
 - `.github/workflows/ci.yml` runs typecheck, vocabulary validation, unit tests, production build, artifact verification and isolated Chromium E2E jobs on pushes and pull requests.
 - `.github/workflows/deploy-pages.yml` repeats the release gates before deploying `dist/` through official GitHub Pages actions on `main`.
@@ -128,7 +131,7 @@ src/audio/         Native Web Audio cues, ambient soundscapes, and mute preferen
 src/core/          Boot coordination, state machine, fixed-step loop, pause, and configuration
 src/gameplay/      Snake, arena, five environment profiles, collision, spawning, and simulation
 src/input/         Keyboard direction, maneuver, weapon, and table-motion input adapters
-src/rendering/     Three.js arena/environment/entity views plus the pinball-table camera rig
+src/rendering/     Responsive Canvas 2D playfield plus retained rendering utilities and animation helpers
 src/ui/            Chinese screens, integrated pinball-table HUD, and typing modal
 src/vocabulary/    Runtime repository, modes, deterministic WordSelector, and tests
 e2e/               Playwright smoke test

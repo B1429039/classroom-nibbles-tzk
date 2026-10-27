@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## Unreleased — 2D top-down classroom improvement
+
+### Added
+- Added a responsive Canvas 2D top-down renderer for the complete arena, including the snake, ordered character tokens, pulsing next-token ring, power-ups, bullets, grid, boundaries and environment obstacles.
+
+### Changed
+- Switched the active game presentation from the Three.js perspective scene to the 2D renderer without changing gameplay coordinates, controls, collision rules, vocabulary order, typing tests or scene progression.
+- Preserved the deep ink-navy field, white grid lines, red warning boundaries/obstacles and 80% obstacle opacity in the new presentation.
+- Kept device-pixel-ratio resizing, responsive canvas sizing, table tilt/shake feedback, backflip feedback and machine-readable render diagnostics.
+
+## Unreleased — Playfield contrast adjustment
+
+### Changed
+- Recolored all environment playfields to a deep ink-navy floor with white grid lines.
+- Recolored solid and wrap boundaries plus environment obstacles with red warning tones while preserving their existing gameplay and rendering distinctions.
+- Removed the decorative central bottom table apron and label so the lower playfield remains visible.
+- Removed the right-side decorative overlay rail and added a 0.9-unit visual clearance for token and power-up spawning near arena edges.
+- Slimmed the physical boundary rail visuals while keeping their collision and wrap behavior unchanged.
+- Made the desktop right HUD rail a transparent layout shell so its empty lower area no longer covers the playfield.
+- Reduced the desktop recent-event card width, padding and text size to keep more of the lower-right playfield visible.
+- Narrowed the desktop right HUD column to add more separation between mission information and the playfield.
+- Added a pulsing high-contrast yellow ring around the next required playfield token while preserving ordered collection.
+- Kept character tokens and power-ups visually readable above tall environment obstacles without changing their physical collision behavior.
+- Replaced the always-on-top collectible rendering with moderately transparent environment obstacles, so behind-obstacle letters remain visible without appearing above the obstacles.
+- Made collectible and obstacle rendering depth-aware so their front/back relationship remains visible through the transparency effect.
+- Increased the main obstacle opacity to 80% for a clearer silhouette while retaining readable letters behind it.
+
 ## Version 1.9.1 — 2026-08-25
 
 ### Changed
@@ -7,6 +34,7 @@
 - Alternated primary and scene-accent body armor colors and section scale so neighboring sections remain visually distinct at the full-table camera distance.
 - Enlarged the existing luminous section rings and raised the head armor/canopy layers for a clearer head-to-body silhouette without increasing the mecha draw-call count.
 - Added browser diagnostics and regression coverage for the alternating panel pattern and energy-ring separators.
+- Reorganized the desktop HUD into left operation/status, central playfield, and right mission/target regions so instructions do not cover the main game view; compact smaller-viewport behavior and all gameplay rules remain unchanged.
 - Updated the specification, README and release metadata to Version 1.9.1.
 
 ## Version 1.9 — 2026-08-25
