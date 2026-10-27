@@ -66,6 +66,7 @@ interface SessionFixture {
   readonly session: VocabularyGameplaySession;
   readonly stateMachine: StateMachine<ReturnType<typeof createGameStateMachine>["state"]>;
   readonly snake: Snake;
+  readonly tokenPool: TokenPool;
 }
 
 function createSession(target: string, initialLength = 8): SessionFixture {
@@ -96,6 +97,7 @@ function createSession(target: string, initialLength = 8): SessionFixture {
     minimumHeadDistance: 4,
     minimumEntitySpacing: 0.82,
     bodyClearance: 0.68,
+    boundaryClearance: 0.9,
     maximumRandomAttempts: 100,
     fallbackGridSpacing: 1.15,
   });
@@ -108,7 +110,7 @@ function createSession(target: string, initialLength = 8): SessionFixture {
     new TokenCollisionSystem(GAMEPLAY_CONFIG.snake.headCollisionRadius),
   );
   stateMachine.transition(GameState.HUNTING);
-  return { session, stateMachine, snake };
+  return { session, stateMachine, snake, tokenPool };
 }
 
 describe("VocabularyGameplaySession", () => {
@@ -196,6 +198,21 @@ describe("VocabularyGameplaySession", () => {
     });
     expect(session.status.state).toBe(GameState.HUNTING);
     expect(session.status.nextToken).toBe("B");
+  });
+
+  it("respawns a missing current target before checking collisions", () => {
+    const { session, tokenPool } = createSession("AB");
+    const first = session.tokenEntities.find((entity) => entity.token === "A")!;
+    session.resolveTokenCollision(first.id);
+    const target = session.tokenEntities.find((entity) => entity.token === "B")!;
+
+    tokenPool.remove(target.id);
+    expect(session.tokenEntities.some((entity) => entity.token === "B")).toBe(false);
+
+    session.update(0);
+
+    expect(session.status.nextToken).toBe("B");
+    expect(session.tokenEntities.some((entity) => entity.token === "B")).toBe(true);
   });
 
   it("rolls back only the last token and adds five main-timer seconds on typing timeout", () => {

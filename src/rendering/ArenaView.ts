@@ -2,6 +2,8 @@ import * as THREE from "three";
 import { Arena, BoundaryMode } from "../gameplay/Arena";
 import type { EnvironmentProfile } from "../gameplay/Environment";
 
+const BOUNDARY_VISUAL_HEIGHT = 0.28;
+
 export class ArenaView {
   readonly #floorGeometry: THREE.PlaneGeometry;
   readonly #floorMaterial: THREE.MeshBasicMaterial;
@@ -49,8 +51,16 @@ export class ArenaView {
       fog: false,
       toneMapped: false,
     });
-    this.#xBoundaryGeometry = new THREE.BoxGeometry(0.22, 0.8, halfDepth * 2);
-    this.#zBoundaryGeometry = new THREE.BoxGeometry(halfWidth * 2, 0.8, 0.22);
+    this.#xBoundaryGeometry = new THREE.BoxGeometry(
+      0.22,
+      BOUNDARY_VISUAL_HEIGHT,
+      halfDepth * 2,
+    );
+    this.#zBoundaryGeometry = new THREE.BoxGeometry(
+      halfWidth * 2,
+      BOUNDARY_VISUAL_HEIGHT,
+      0.22,
+    );
 
     const xBoundaries = this.#createBoundaryInstances(
       this.#xBoundaryGeometry,
@@ -111,7 +121,7 @@ export class ArenaView {
     instances.matrixAutoUpdate = false;
     const matrix = new THREE.Matrix4();
     positions.forEach((position, index) => {
-      matrix.makeTranslation(position.x, 0.35, position.z);
+      matrix.makeTranslation(position.x, BOUNDARY_VISUAL_HEIGHT / 2, position.z);
       instances.setMatrixAt(index, matrix);
     });
     instances.instanceMatrix.needsUpdate = true;

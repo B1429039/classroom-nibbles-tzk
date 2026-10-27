@@ -91,7 +91,9 @@ export class PowerUpView {
   readonly #material = new THREE.MeshBasicMaterial({
     map: this.#texture,
     transparent: true,
-    depthWrite: false,
+    alphaTest: 0.1,
+    depthWrite: true,
+    depthTest: true,
     fog: false,
     side: THREE.DoubleSide,
   });

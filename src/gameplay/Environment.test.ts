@@ -46,6 +46,19 @@ describe("Phase 7 environments", () => {
     }
   });
 
+  it("uses the high-contrast ink-navy warning palette across every playfield", () => {
+    for (const profile of ENVIRONMENT_PROFILES) {
+      expect(profile.palette.backgroundColor).toBe(0x050b16);
+      expect(profile.palette.floorColor).toBe(0x071a36);
+      expect(profile.palette.gridCenterColor).toBe(0xffffff);
+      expect(profile.palette.gridLineColor).toBe(0xffffff);
+      expect(profile.palette.solidWallColor).toBe(0xff3b30);
+      expect(profile.palette.wrapGateColor).toBe(0xff625c);
+      expect(profile.palette.obstacleColor).toBe(0xb51f2f);
+      expect(profile.palette.obstacleAccentColor).toBe(0xff625c);
+    }
+  });
+
   it("uses the requested cumulative word ladder with playable scaled timers", () => {
     expect(GAME_LEVEL_CONFIGS.map((level) => level.wordsPerScene)).toEqual([
       5,
@@ -108,6 +121,7 @@ describe("Phase 7 environments", () => {
   it("has enough obstacle-free space for every token and persistent power-up", () => {
     const arena = new Arena(GAMEPLAY_CONFIG.arena);
     const snake = new Snake(GAMEPLAY_CONFIG.snake);
+    const { halfWidth, halfDepth } = GAMEPLAY_CONFIG.arena;
     for (const profile of ENVIRONMENT_PROFILES) {
       const spawnManager = new SpawnManager(
         arena,
@@ -116,6 +130,7 @@ describe("Phase 7 environments", () => {
           minimumHeadDistance: GAMEPLAY_CONFIG.token.minimumHeadDistance,
           minimumEntitySpacing: GAMEPLAY_CONFIG.token.minimumEntitySpacing,
           bodyClearance: GAMEPLAY_CONFIG.token.bodyClearance,
+          boundaryClearance: GAMEPLAY_CONFIG.token.boundaryClearance,
           maximumRandomAttempts: GAMEPLAY_CONFIG.token.maximumRandomAttempts,
           fallbackGridSpacing: GAMEPLAY_CONFIG.token.fallbackGridSpacing,
         },
@@ -139,6 +154,9 @@ describe("Phase 7 environments", () => {
       expect(tokens.entities).toHaveLength(CHARACTER_TOKENS.length);
       expect(powerUps.entities).toHaveLength(POWER_UP_KINDS.length);
       for (const entity of [...tokens.entities, ...powerUps.entities]) {
+        const boundaryMargin = entity.radius + GAMEPLAY_CONFIG.token.boundaryClearance;
+        expect(Math.abs(entity.position.x) + boundaryMargin).toBeLessThan(halfWidth);
+        expect(Math.abs(entity.position.z) + boundaryMargin).toBeLessThan(halfDepth);
         for (const obstacle of profile.obstacles) {
           const clearance = entity.radius + obstacle.radius;
           expect(

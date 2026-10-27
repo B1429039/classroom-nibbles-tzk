@@ -40,7 +40,8 @@ body {
 }
 
 .smoke-scene,
-.phase-three-scene {
+.phase-three-scene,
+.phase-two-dimensional-scene {
   position: absolute;
   inset: 0;
   z-index: -1;
@@ -176,33 +177,6 @@ body {
 .pinball-table-overlay__rail--left {
   left: -0.5rem;
   clip-path: polygon(0 0, 42% 0, 100% 100%, 0 100%);
-}
-
-.pinball-table-overlay__rail--right {
-  right: -0.5rem;
-  clip-path: polygon(58% 0, 100% 0, 100% 100%, 0 100%);
-}
-
-.pinball-table-overlay__apron {
-  position: absolute;
-  bottom: -1.25rem;
-  left: 50%;
-  width: min(34rem, 56vw);
-  height: 6rem;
-  border: 1px solid var(--line);
-  background: linear-gradient(180deg, rgb(16 37 53 / 88%), rgb(2 6 13 / 98%) 72%);
-  clip-path: polygon(7% 0, 93% 0, 100% 100%, 0 100%);
-  transform: translateX(-50%);
-}
-
-.pinball-table-overlay__label {
-  position: absolute;
-  bottom: 0.72rem;
-  left: 50%;
-  color: var(--accent);
-  font: 700 0.62rem ui-monospace, "Cascadia Code", monospace;
-  letter-spacing: 0.16em;
-  transform: translateX(-50%);
 }
 
 .game-hud {
@@ -1528,36 +1502,6 @@ body {
   clip-path: polygon(0 0, 43% 0, 100% 100%, 0 100%);
 }
 
-.pinball-table-overlay__rail--right {
-  right: -0.55rem;
-  clip-path: polygon(57% 0, 100% 0, 100% 100%, 0 100%);
-}
-
-.pinball-table-overlay__apron {
-  bottom: -1.5rem;
-  width: min(42rem, 65vw);
-  height: 8.5rem;
-  border: 4px solid var(--steel-mid);
-  border-bottom: 0;
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 14%), transparent 13%),
-    repeating-linear-gradient(135deg, transparent 0 1.1rem, rgb(255 255 255 / 3%) 1.1rem 1.2rem),
-    linear-gradient(180deg, var(--cabinet), var(--cabinet-deep) 72%, #02051a);
-  box-shadow: inset 0 0 0 2px #18234a, inset 0 1.4rem 2rem rgb(0 0 0 / 30%), 0 0 2rem rgb(0 0 0 / 72%);
-  clip-path: polygon(5% 0, 95% 0, 100% 100%, 0 100%);
-}
-
-.pinball-table-overlay__label {
-  bottom: 0.7rem;
-  padding: 0.42rem 1.2rem;
-  border: 2px solid var(--steel-mid);
-  background: #05091f;
-  color: var(--lamp);
-  font-size: 0.68rem;
-  letter-spacing: 0.18em;
-  text-shadow: 0 0 0.55rem var(--lamp);
-}
-
 .game-hud__eyebrow,
 .game-hud__environment,
 .game-hud__table-motion,
@@ -2016,9 +1960,6 @@ body {
     clip-path: none;
   }
 
-  .pinball-table-overlay__apron {
-    width: 82vw;
-  }
 }
 
 /* Final live-table overrides: retain the cabinet silhouette without costly
@@ -2073,8 +2014,6 @@ body {
 .pinball-table-overlay::before,
 .pinball-table-overlay::after,
 .pinball-table-overlay__rail,
-.pinball-table-overlay__apron,
-.pinball-table-overlay__label,
 .game-hud__mission,
 .game-hud__telemetry,
 .game-hud__events,
@@ -2091,10 +2030,6 @@ body {
 
 .pinball-table-overlay__rail {
   background: linear-gradient(90deg, #090d25, #d8e0ee 13%, #536386 27%, var(--rail) 42% 70%, #641533 84%, #050817);
-}
-
-.pinball-table-overlay__apron {
-  background: linear-gradient(180deg, var(--cabinet), var(--cabinet-deep) 72%, #02051a);
 }
 
 .game-hud__heading,
@@ -2128,7 +2063,6 @@ body {
 }
 
 .pinball-table-overlay__rail,
-.pinball-table-overlay__apron,
 .game-hud__environment,
 .game-hud__table-motion,
 .game-hud__target-block,
@@ -2139,4 +2073,135 @@ body {
 .game-hud__heading,
 .game-hud__heading > * {
   transform: none;
+}
+
+/* Desktop HUD layout: keep instructions and mission information in side rails
+   so the central pinball playfield stays visually clear. Smaller viewports
+   retain the existing compact HUD rules above. */
+@media (min-width: 1001px) {
+  .game-hud {
+    display: grid;
+    grid-template-columns: minmax(13rem, 17vw) minmax(0, 1fr) minmax(15rem, 18vw);
+    gap: clamp(0.65rem, 1vw, 1rem);
+    padding: 0.8rem;
+  }
+
+  .game-hud__rail {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    min-width: 0;
+    max-height: calc(100vh - 1.6rem);
+    flex-direction: column;
+    gap: 0.7rem;
+    overflow: hidden;
+    padding: 0.7rem;
+    border: 2px solid var(--steel-mid);
+    background: rgb(4 10 34 / 78%);
+  }
+
+  .game-hud__rail--left {
+    grid-column: 1;
+    padding-top: 4rem;
+  }
+
+  .game-hud__rail--right {
+    grid-column: 3;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+
+  .game-hud__center {
+    position: relative;
+    z-index: 1;
+    grid-column: 2;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .game-hud__heading,
+  .game-hud__environment,
+  .game-hud__table-motion,
+  .game-hud__mission,
+  .game-hud__telemetry,
+  .game-hud__events,
+  .game-hud__target-block,
+  .game-hud__controls {
+    position: static;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    transform: none;
+  }
+
+  .game-hud__heading {
+    display: block;
+    padding: 0.5rem 0.65rem 0.65rem;
+    border-bottom: 3px solid var(--rail);
+  }
+
+  .game-hud__heading > * {
+    transform: none;
+  }
+
+  .game-hud__title {
+    font-size: clamp(1.45rem, 2.2vw, 1.95rem);
+  }
+
+  .game-hud__environment,
+  .game-hud__table-motion {
+    flex: 0 0 auto;
+  }
+
+  .game-hud__mission,
+  .game-hud__telemetry,
+  .game-hud__events {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .game-hud__events {
+    align-self: flex-end;
+    width: min(100%, 18rem);
+  }
+
+  .game-hud__events .game-hud__metric {
+    padding: 0.4rem 0.48rem;
+  }
+
+  .game-hud__events .game-hud__metric-label {
+    margin-bottom: 0.08rem;
+    font-size: 0.52rem;
+  }
+
+  .game-hud__events .game-hud__metric-value {
+    font-size: 0.78rem;
+  }
+
+  .game-hud__telemetry {
+    margin-top: auto;
+  }
+
+  .game-hud__target-block {
+    text-align: center;
+  }
+
+  .game-hud__controls {
+    padding: 0.7rem;
+    text-align: left;
+  }
+
+  .game-hud__message {
+    top: 50%;
+    right: auto;
+    bottom: auto;
+    left: 50%;
+    width: min(100%, 42rem);
+    transform: translate(-50%, -50%);
+  }
+
+  .audio-control {
+    top: 0.8rem;
+    left: 0.8rem;
+  }
 }

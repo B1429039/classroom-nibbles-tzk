@@ -6,6 +6,7 @@ export interface SpawnManagerConfig {
   readonly minimumHeadDistance: number;
   readonly minimumEntitySpacing: number;
   readonly bodyClearance: number;
+  readonly boundaryClearance: number;
   readonly maximumRandomAttempts: number;
   readonly fallbackGridSpacing: number;
 }
@@ -48,6 +49,7 @@ export class SpawnManager {
       config.minimumHeadDistance < 0 ||
       config.minimumEntitySpacing <= 0 ||
       config.bodyClearance <= 0 ||
+      config.boundaryClearance < 0 ||
       !Number.isInteger(config.maximumRandomAttempts) ||
       config.maximumRandomAttempts < 1 ||
       config.fallbackGridSpacing <= 0
@@ -78,10 +80,11 @@ export class SpawnManager {
 
   #randomPoint(radius: number): XZPoint {
     const { halfWidth, halfDepth } = this.#arena.config;
-    const minimumX = -halfWidth + radius;
-    const maximumX = halfWidth - radius;
-    const minimumZ = -halfDepth + radius;
-    const maximumZ = halfDepth - radius;
+    const boundaryMargin = radius + this.#config.boundaryClearance;
+    const minimumX = -halfWidth + boundaryMargin;
+    const maximumX = halfWidth - boundaryMargin;
+    const minimumZ = -halfDepth + boundaryMargin;
+    const maximumZ = halfDepth - boundaryMargin;
     return {
       x: minimumX + this.#random.next() * (maximumX - minimumX),
       z: minimumZ + this.#random.next() * (maximumZ - minimumZ),
@@ -131,11 +134,12 @@ export class SpawnManager {
 
   #insideArena(point: XZPoint, radius: number): boolean {
     const { halfWidth, halfDepth } = this.#arena.config;
+    const boundaryMargin = radius + this.#config.boundaryClearance;
     return (
-      point.x - radius > -halfWidth &&
-      point.x + radius < halfWidth &&
-      point.z - radius > -halfDepth &&
-      point.z + radius < halfDepth
+      point.x - boundaryMargin > -halfWidth &&
+      point.x + boundaryMargin < halfWidth &&
+      point.z - boundaryMargin > -halfDepth &&
+      point.z + boundaryMargin < halfDepth
     );
   }
 

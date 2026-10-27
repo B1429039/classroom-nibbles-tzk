@@ -21,6 +21,7 @@ function createSpawnManager(arena: Arena, random: RandomSource): SpawnManager {
     minimumHeadDistance: 4,
     minimumEntitySpacing: 0.82,
     bodyClearance: 0.68,
+    boundaryClearance: 0.9,
     maximumRandomAttempts: 100,
     fallbackGridSpacing: 1.15,
   });
@@ -84,6 +85,7 @@ describe("SpawnManager and TokenPool", () => {
       minimumHeadDistance: 4,
       minimumEntitySpacing: 0.82,
       bodyClearance: 0.68,
+      boundaryClearance: 0.9,
       maximumRandomAttempts: 3,
       fallbackGridSpacing: 1.15,
     });
@@ -112,6 +114,7 @@ describe("SpawnManager and TokenPool", () => {
         minimumHeadDistance: 4,
         minimumEntitySpacing: 0.82,
         bodyClearance: 0.68,
+        boundaryClearance: 0.9,
         maximumRandomAttempts: 100,
         fallbackGridSpacing: 1.15,
       },

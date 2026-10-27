@@ -29,7 +29,7 @@ import { ManeuverInput } from "../input/ManeuverInput";
 import { PauseInput } from "../input/PauseInput";
 import { TableMotionInput } from "../input/TableMotionInput";
 import { WeaponInput } from "../input/WeaponInput";
-import { PhaseThreeScene } from "../rendering/PhaseThreeScene";
+import { TwoDimensionalScene } from "../rendering/TwoDimensionalScene";
 import { BootScreen } from "../ui/BootScreen";
 import { AudioControl } from "../ui/AudioControl";
 import { CreditsScreen } from "../ui/CreditsScreen";
@@ -115,7 +115,7 @@ export class Game {
   readonly #audioControl: AudioControl;
   readonly #unsubscribeStateChange: () => void;
   readonly #unsubscribeCollision: () => void;
-  #scene: PhaseThreeScene | null = null;
+  #scene: TwoDimensionalScene | null = null;
   #selectionScreen: VocabularySelectScreen | null = null;
   #hud: GameHud | null = null;
   #pinballTableOverlay: PinballTableOverlay | null = null;
@@ -157,7 +157,7 @@ export class Game {
   async start(): Promise<void> {
     this.#bootScreen.setLoading();
     try {
-      this.#scene = new PhaseThreeScene(
+      this.#scene = new TwoDimensionalScene(
         this.#container,
         this.#arena,
         this.#environment.current,
@@ -233,6 +233,7 @@ export class Game {
           minimumHeadDistance: GAMEPLAY_CONFIG.token.minimumHeadDistance,
           minimumEntitySpacing: GAMEPLAY_CONFIG.token.minimumEntitySpacing,
           bodyClearance: GAMEPLAY_CONFIG.token.bodyClearance,
+          boundaryClearance: GAMEPLAY_CONFIG.token.boundaryClearance,
           maximumRandomAttempts: GAMEPLAY_CONFIG.token.maximumRandomAttempts,
           fallbackGridSpacing: GAMEPLAY_CONFIG.token.fallbackGridSpacing,
         },

@@ -92,6 +92,15 @@ export interface EnvironmentProfile {
   readonly obstacles: readonly EnvironmentObstacle[];
 }
 
+// Shared warning palette for the playfield. Keeping these values centralized
+// makes the visual warning language consistent across all five environments.
+const INK_NAVY_BACKGROUND = 0x050b16;
+const INK_NAVY_FLOOR = 0x071a36;
+const WARNING_RED = 0xff3b30;
+const WARNING_RED_BRIGHT = 0xff625c;
+const WARNING_RED_DARK = 0xb51f2f;
+const WHITE_LINE = 0xffffff;
+
 interface ObstacleDefinition {
   readonly x: number;
   readonly z: number;
@@ -148,14 +157,14 @@ export const ENVIRONMENT_PROFILES: readonly EnvironmentProfile[] = Object.freeze
       variant: 1,
     }),
     palette: Object.freeze({
-      backgroundColor: 0x050b16,
-      floorColor: 0x0b1950,
-      gridCenterColor: 0x35f2e0,
-      gridLineColor: 0x254b89,
-      solidWallColor: 0xff5a4f,
-      wrapGateColor: 0x557eff,
-      obstacleColor: 0x7483a4,
-      obstacleAccentColor: 0xffd343,
+      backgroundColor: INK_NAVY_BACKGROUND,
+      floorColor: INK_NAVY_FLOOR,
+      gridCenterColor: WHITE_LINE,
+      gridLineColor: WHITE_LINE,
+      solidWallColor: WARNING_RED,
+      wrapGateColor: WARNING_RED_BRIGHT,
+      obstacleColor: WARNING_RED_DARK,
+      obstacleAccentColor: WARNING_RED_BRIGHT,
       hemisphereSkyColor: 0xbcecff,
       hemisphereGroundColor: 0x08101e,
       keyLightColor: 0x73ffe1,
@@ -205,14 +214,14 @@ export const ENVIRONMENT_PROFILES: readonly EnvironmentProfile[] = Object.freeze
       variant: 2,
     }),
     palette: Object.freeze({
-      backgroundColor: 0x041016,
-      floorColor: 0x0b2458,
-      gridCenterColor: 0x57c7ff,
-      gridLineColor: 0x27598c,
-      solidWallColor: 0xff6a45,
-      wrapGateColor: 0x5b83ff,
-      obstacleColor: 0x8194b1,
-      obstacleAccentColor: 0xb8f5ff,
+      backgroundColor: INK_NAVY_BACKGROUND,
+      floorColor: INK_NAVY_FLOOR,
+      gridCenterColor: WHITE_LINE,
+      gridLineColor: WHITE_LINE,
+      solidWallColor: WARNING_RED,
+      wrapGateColor: WARNING_RED_BRIGHT,
+      obstacleColor: WARNING_RED_DARK,
+      obstacleAccentColor: WARNING_RED_BRIGHT,
       hemisphereSkyColor: 0xa5f7f1,
       hemisphereGroundColor: 0x07171c,
       keyLightColor: 0x5cf2e6,
@@ -264,14 +273,14 @@ export const ENVIRONMENT_PROFILES: readonly EnvironmentProfile[] = Object.freeze
       variant: 3,
     }),
     palette: Object.freeze({
-      backgroundColor: 0x070711,
-      floorColor: 0x231454,
-      gridCenterColor: 0xcf80ff,
-      gridLineColor: 0x503678,
-      solidWallColor: 0xff4f69,
-      wrapGateColor: 0x8d7cff,
-      obstacleColor: 0x817294,
-      obstacleAccentColor: 0xffcc5c,
+      backgroundColor: INK_NAVY_BACKGROUND,
+      floorColor: INK_NAVY_FLOOR,
+      gridCenterColor: WHITE_LINE,
+      gridLineColor: WHITE_LINE,
+      solidWallColor: WARNING_RED,
+      wrapGateColor: WARNING_RED_BRIGHT,
+      obstacleColor: WARNING_RED_DARK,
+      obstacleAccentColor: WARNING_RED_BRIGHT,
       hemisphereSkyColor: 0xcfc7ff,
       hemisphereGroundColor: 0x0a0712,
       keyLightColor: 0xb9a8ff,
@@ -324,14 +333,14 @@ export const ENVIRONMENT_PROFILES: readonly EnvironmentProfile[] = Object.freeze
       variant: 4,
     }),
     palette: Object.freeze({
-      backgroundColor: 0x172738,
-      floorColor: 0x183c63,
-      gridCenterColor: 0x86e4ff,
-      gridLineColor: 0x3a6785,
-      solidWallColor: 0xff7847,
-      wrapGateColor: 0x77b9ff,
-      obstacleColor: 0x8094a7,
-      obstacleAccentColor: 0xffe16e,
+      backgroundColor: INK_NAVY_BACKGROUND,
+      floorColor: INK_NAVY_FLOOR,
+      gridCenterColor: WHITE_LINE,
+      gridLineColor: WHITE_LINE,
+      solidWallColor: WARNING_RED,
+      wrapGateColor: WARNING_RED_BRIGHT,
+      obstacleColor: WARNING_RED_DARK,
+      obstacleAccentColor: WARNING_RED_BRIGHT,
       hemisphereSkyColor: 0xd1ecf2,
       hemisphereGroundColor: 0x142635,
       keyLightColor: 0xffe0a3,
@@ -381,14 +390,14 @@ export const ENVIRONMENT_PROFILES: readonly EnvironmentProfile[] = Object.freeze
       variant: 5,
     }),
     palette: Object.freeze({
-      backgroundColor: 0x03110c,
-      floorColor: 0x0c3a2c,
-      gridCenterColor: 0x7dff9c,
-      gridLineColor: 0x28644a,
-      solidWallColor: 0xff6b58,
-      wrapGateColor: 0x52bfc2,
-      obstacleColor: 0x416d56,
-      obstacleAccentColor: 0xdfff65,
+      backgroundColor: INK_NAVY_BACKGROUND,
+      floorColor: INK_NAVY_FLOOR,
+      gridCenterColor: WHITE_LINE,
+      gridLineColor: WHITE_LINE,
+      solidWallColor: WARNING_RED,
+      wrapGateColor: WARNING_RED_BRIGHT,
+      obstacleColor: WARNING_RED_DARK,
+      obstacleAccentColor: WARNING_RED_BRIGHT,
       hemisphereSkyColor: 0xa8efc3,
       hemisphereGroundColor: 0x06130d,
       keyLightColor: 0x82ffab,
